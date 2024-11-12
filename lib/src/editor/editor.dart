@@ -267,7 +267,7 @@ class ExtendedImageEditorState extends State<ExtendedImageEditor> {
   }
 
   void _handlePointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent && event.kind == PointerDeviceKind.mouse) {
+    if (event is PointerScrollEvent && (event.kind == PointerDeviceKind.mouse || event.kind == PointerDeviceKind.trackpad)) {
       _handleScaleStart(ScaleStartDetails(focalPoint: event.position));
       final double dy = event.scrollDelta.dy;
       final double dx = event.scrollDelta.dx;
@@ -349,6 +349,20 @@ class ExtendedImageEditorState extends State<ExtendedImageEditor> {
     setState(() {
       _editActionDetails!.rotate(
         right ? pi / 2.0 : -pi / 2.0,
+        _layerKey.currentState!.layoutRect,
+        BoxFit.contain,
+      );
+      _editorConfig!.editActionDetailsIsChanged?.call(_editActionDetails);
+    });
+  }
+
+  void rotateIncremental(degrees) {
+    if (_layerKey.currentState == null) {
+      return;
+    }
+    setState(() {
+      _editActionDetails!.rotate(
+        degrees,
         _layerKey.currentState!.layoutRect,
         BoxFit.contain,
       );
