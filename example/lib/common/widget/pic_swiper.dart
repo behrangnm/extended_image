@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:example/common/data/tu_chong_source.dart' hide asT;
-@FFArgumentImport()
+@FFAutoImport()
 import 'package:example/common/model/pic_swiper_item.dart';
 // import 'package:example/common/text/my_extended_text_selection_controls.dart';
 // import 'package:example/common/text/my_special_text_span_builder.dart';
@@ -515,7 +515,10 @@ class _PicSwiperState extends State<PicSwiper> with TickerProviderStateMixin {
                           return ExtendedImageGesture(
                             state,
                             canScaleImage: (_) => _imageDetailY == 0,
-                            imageBuilder: (Widget image) {
+                            imageBuilder: (
+                              Widget image, {
+                              ExtendedImageGestureState? imageGestureState,
+                            }) {
                               return Stack(
                                 children: <Widget>[
                                   Positioned.fill(
@@ -625,10 +628,11 @@ class _PicSwiperState extends State<PicSwiper> with TickerProviderStateMixin {
         Offset offset, {
         ExtendedImageSlidePageState? state,
       }) {
+        if (state == null) {
+          return null;
+        }
         //image is ready and it's not sliding.
-        if (state != null &&
-            detailKeys[_currentIndex!] != null &&
-            state.scale == 1.0) {
+        if (detailKeys[_currentIndex!] != null && state.scale == 1.0) {
           //don't slide page if scale of image is more than 1.0
           if (state.imageGestureState!.gestureDetails!.totalScale! > 1.0) {
             return 1.0;
@@ -645,10 +649,11 @@ class _PicSwiperState extends State<PicSwiper> with TickerProviderStateMixin {
         Offset offset, {
         ExtendedImageSlidePageState? state,
       }) {
+        if (state == null) {
+          return null;
+        }
         //image is ready and it's not sliding.
-        if (state != null &&
-            detailKeys[_currentIndex!] != null &&
-            state.scale == 1.0) {
+        if (detailKeys[_currentIndex!] != null && state.scale == 1.0) {
           //don't slide page if scale of image is more than 1.0
 
           if (state.imageGestureState!.gestureDetails!.totalScale! > 1.0) {
@@ -680,10 +685,13 @@ class _PicSwiperState extends State<PicSwiper> with TickerProviderStateMixin {
         ExtendedImageSlidePageState? state,
         ScaleEndDetails? details,
       }) {
-        if (_imageDetailY != 0 && state!.scale == 1) {
+        if (state == null || details == null) {
+          return null;
+        }
+        if (_imageDetailY != 0 && state.scale == 1) {
           if (!_slideEndAnimationController.isAnimating) {
 // get magnitude from gesture velocity
-            final double magnitude = details!.velocity.pixelsPerSecond.distance;
+            final double magnitude = details.velocity.pixelsPerSecond.distance;
 
             // do a significant magnitude
 
